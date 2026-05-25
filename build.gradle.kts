@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "info.scoo-va"
-version = "1.1.2"
+version = "1.1.3"
 
 repositories { mavenCentral() }
 
@@ -39,7 +39,7 @@ java {
 
             pom {
                 name.set("Scoova Geocoding SDK (Android / JVM)")
-                description.set("Pelias-compatible geocoding client (search, autocomplete, reverse, place, structured, batch).")
+                description.set("Geocoding geocoding client (search, autocomplete, reverse, place, structured, batch).")
                 url.set("https://github.com/Scoova/scoova-geocoding-android")
                 licenses {
                     license {

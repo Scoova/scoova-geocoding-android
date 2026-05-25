@@ -1,6 +1,6 @@
 # Scoova Geocoding — Android / JVM
 
-Pelias-compatible geocoding client for `api.scoo-va.info/api/v1/geocoding` — forward
+Geocoding geocoding client for `api.scoo-va.info/api/v1/geocoding` — forward
 search, autocomplete, reverse, place lookup, structured search, and a
 synchronous batch endpoint (up to 100 mixed forward/reverse queries per
 request).
@@ -41,7 +41,7 @@ runBlocking {
     val hit = client.search("Tour Eiffel")
     val rev = client.reverse(48.8584, 2.2945, size = 1)
     val ac  = client.autocomplete("Tour Eif")
-    val pl  = client.place(listOf("whosonfirst:locality:101751119"))
+    val pl  = client.place(listOf("place data:locality:101751119"))
     val st  = client.searchStructured(mapOf("locality" to "Cairo", "country" to "EG"))
 
     val batch = client.batch(listOf(

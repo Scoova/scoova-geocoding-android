@@ -133,7 +133,7 @@ class GeocodingClient(
      * Default locale (e.g. `"en"`, `"fr"`, `"ar-EG"`). Sent as both
      * `?locale=` and `Accept-Language` on every request. A per-call `lang`
      * argument still overrides it. Defaults to `"en"` so labels come back
-     * in a single language — without it, Pelias mixes per-field.
+     * in a single language — otherwise results may mix languages per field.
      */
     private val locale: String = "en",
     private val androidPackage: String? = null,
@@ -214,7 +214,7 @@ class GeocodingClient(
         return getJson("/v1/reverse", params)
     }
 
-    /** Lookup one or more Pelias gids (e.g. `whosonfirst:locality:101751119`). */
+    /** Lookup one or more place IDs (e.g. `<place-id>`). */
     suspend fun place(ids: List<String>): GeoResponse =
         getJson("/v1/place", linkedMapOf("ids" to ids.joinToString(","), "lang" to locale))
 

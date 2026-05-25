@@ -74,8 +74,8 @@ class GeocodingClientTest {
         val client = GeocodingClient(
             baseUrl = "https://example.test", apiKey = "k", http = stub(cap),
         )
-        client.place(listOf("whosonfirst:locality:101751119", "whosonfirst:country:85632343"))
-        assertTrue(cap.url.contains("ids=whosonfirst%3Alocality%3A101751119%2Cwhosonfirst%3Acountry%3A85632343"))
+        client.place(listOf("place data:locality:101751119", "place data:country:85632343"))
+        assertTrue(cap.url.contains("ids=place data%3Alocality%3A101751119%2Cplace data%3Acountry%3A85632343"))
     }
 
     @Test fun parsesFeatures() = runTest {
