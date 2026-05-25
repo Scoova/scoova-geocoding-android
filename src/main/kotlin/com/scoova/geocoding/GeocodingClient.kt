@@ -122,7 +122,7 @@ typealias GeocodingHttp = suspend (
 // ─── Client ───────────────────────────────────────────────────────────
 
 class GeocodingClient(
-    baseUrl: String = "https://geocoding.scoo-va.info",
+    baseUrl: String = "https://api.scoo-va.info/api/v1/geocoding",
     /**
      * Scoova API key. Sent on every request as `X-API-Key`. If null, the
      * client falls back to the `SCOOVA_API_KEY` environment variable, then

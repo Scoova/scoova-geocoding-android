@@ -4,6 +4,9 @@ All notable changes to the Scoova Geocoding Android SDK are documented
 here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.1 — 2026-05-25
+- Default `baseUrl` switched from the retired `https://geocoding.scoo-va.info` subdomain to the central gateway at `https://api.scoo-va.info/api/v1/geocoding`. Callers who explicitly set `baseUrl` are unaffected. The old subdomain returns `ENDPOINT_RETIRED`.
+
 ## [1.1.0] — 2026-05-25
 
 ### Added

@@ -1,6 +1,6 @@
 # Scoova Geocoding — Android / JVM
 
-Pelias-compatible geocoding client for `geocoding.scoo-va.info` — forward
+Pelias-compatible geocoding client for `api.scoo-va.info/api/v1/geocoding` — forward
 search, autocomplete, reverse, place lookup, structured search, and a
 synchronous batch endpoint (up to 100 mixed forward/reverse queries per
 request).
@@ -56,7 +56,7 @@ runBlocking {
 
 | arg              | type     | default                              | notes                                  |
 | ---------------- | -------- | ------------------------------------ | -------------------------------------- |
-| `baseUrl`        | `String` | `https://geocoding.scoo-va.info`     |                                        |
+| `baseUrl`        | `String` | `https://api.scoo-va.info/api/v1/geocoding` |                                |
 | `apiKey`         | `String?`| `SCOOVA_API_KEY` env, then `demo`    | sent as `X-API-Key`                    |
 | `locale`         | `String` | `"en"`                               | `?locale=` + `Accept-Language`         |
 | `androidPackage` | `String?`| —                                    | `X-Android-Package` (key restriction)  |
