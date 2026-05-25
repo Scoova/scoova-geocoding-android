@@ -21,7 +21,6 @@ tasks.test { useJUnitPlatform() }
 
 // ─── Publishing ───
 // Monitor-style multi-target publish: GitHub Packages works immediately,
-// Maven Central is staged for when the Sonatype account is provisioned.
 // JitPack also picks this layout up from the repo tag — no extra config.
 
 java {
