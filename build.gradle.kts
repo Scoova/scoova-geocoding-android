@@ -28,7 +28,6 @@ java {
     withJavadocJar()
 }
 
-afterEvaluate {
     publishing {
     publications {
         create<MavenPublication>("release") {
@@ -92,7 +91,7 @@ afterEvaluate {
 // Packages), signing is skipped.
 signing {
     val signingKey: String? = System.getenv("SIGNING_KEY")
-    val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
+    val signingPassword: String = System.getenv("SIGNING_PASSWORD") ?: ""
     isRequired = signingKey != null
     if (signingKey != null) {
         useInMemoryPgpKeys(signingKey, signingPassword)

@@ -19,7 +19,7 @@ if [[ ! -d "$STAGING_DIR" ]]; then
   exit 2
 fi
 
-VERSION=$(ls "$STAGING_DIR/$ARTIFACT_DIR/" 2>/dev/null | sort -V | tail -1)
+VERSION=$(find "$STAGING_DIR/$ARTIFACT_DIR/" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; 2>/dev/null | sort -V | tail -1)
 if [[ -z "$VERSION" ]]; then
   echo "✗ couldn't find a published version under $STAGING_DIR/$ARTIFACT_DIR/" >&2
   echo "  contents:" >&2
@@ -39,7 +39,7 @@ rm -f "$BUNDLE"
 
 echo
 echo "Bundle contents (first 12 entries):"
-unzip -l "$BUNDLE" | head -16
+unzip -l "$BUNDLE" | awk 'NR<=16'
 
 TOKEN=$(printf '%s:%s' "$OSSRH_USERNAME" "$OSSRH_PASSWORD" | base64 | tr -d '\n')
 
