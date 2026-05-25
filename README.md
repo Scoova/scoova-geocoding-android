@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 
 // app build.gradle.kts
 dependencies {
-    implementation("info.scoo-va:scoova-geocoding:1.1.0")
+    implementation("info.scoo-va:scoova-geocoding-android:1.1.3")
 }
 ```
 
