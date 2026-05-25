@@ -2,12 +2,13 @@ name: Release — Publish to Maven Central
 
 # Triggered by pushing a versioned tag, e.g. `git tag v1.1.2 && git push --tags`.
 #
-# Required repository secrets (Settings → Secrets and variables → Actions):
-#
-#   OSSRH_USERNAME     — Sonatype OSSRH username (Maven Central)
-#   OSSRH_PASSWORD     — Sonatype OSSRH user token / password
-#   GPG_PRIVATE_KEY    — ASCII-armored GPG private key for Maven signing
-#   GPG_PASSPHRASE     — passphrase for the GPG key
+# Required repository (or org-level) secrets:
+#   OSSRH_USERNAME   — Sonatype Central Portal username (legacy JIRA account)
+#   OSSRH_PASSWORD   — Sonatype Central Portal password / user-token
+#   SIGNING_KEY      — ASCII-armored PGP secret key (output of
+#                      `gpg --export-secret-keys --armor <KEY_ID>`)
+# Optional:
+#   SIGNING_PASSWORD — passphrase for the PGP key (omit if passphrase-less)
 
 on:
   push:
@@ -16,39 +17,43 @@ on:
 
 jobs:
   publish:
-    name: Publish to Maven Central
+    name: Publish info.scoo-va artifact to Maven Central
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # for `gh release create`
+      packages: write   # for GitHub Packages publish
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: corretto
           java-version: 17
           cache: gradle
 
-      - name: Import GPG key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE:  ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          KEY_ID=$(gpg --list-secret-keys --keyid-format=long | awk '/^sec/{print $2; exit}' | cut -d/ -f2)
-          echo "ORG_GRADLE_PROJECT_signing.keyId=$KEY_ID" >> "$GITHUB_ENV"
-          echo "ORG_GRADLE_PROJECT_signing.password=$GPG_PASSPHRASE" >> "$GITHUB_ENV"
-          echo "ORG_GRADLE_PROJECT_signing.secretKeyRingFile=$HOME/.gnupg/secring.gpg" >> "$GITHUB_ENV"
-          # gpg 2.x doesn't write secring.gpg by default — the gradle signing
-          # plugin still wants the legacy format.
-          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" \
-              --export-secret-keys "$KEY_ID" > "$HOME/.gnupg/secring.gpg"
-
       - name: Bootstrap gradle wrapper
-        run: gradle wrapper --gradle-version 8.10.2
+        run: |
+          if [ ! -x "./gradlew" ]; then
+            gradle wrapper --gradle-version 8.10.2
+          fi
 
-      - name: Publish to Maven Central
+      - name: Stage release artifact (signed)
+        env:
+          SIGNING_KEY:       ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD:  ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publishReleasePublicationToLocalStagingRepository --no-daemon
+
+      - name: Upload to Sonatype Central Portal
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew publishReleasePublicationToMavenCentralRepository --no-daemon
+        run: ./scripts/publish-to-central-portal.sh
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishReleasePublicationToGitHubPackagesRepository --no-daemon
 
       - name: Create GitHub release
         env:
@@ -56,5 +61,5 @@ jobs:
         run: |
           gh release create "${{ github.ref_name }}" \
             --title "${{ github.ref_name }}" \
-            --notes "Published \`${{ github.ref_name }}\` to Maven Central. See [CHANGELOG.md](CHANGELOG.md) for changes." \
+            --notes "Published \`${{ github.ref_name }}\` to Maven Central via Sonatype Central Portal." \
             --verify-tag
