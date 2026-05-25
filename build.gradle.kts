@@ -35,7 +35,7 @@ afterEvaluate {
                 from(components["java"])
 
                 groupId = "info.scoo-va"
-                artifactId = "scoova-geocoding"
+                artifactId = "scoova-geocoding-android"
                 version = project.version.toString()
 
                 pom {
